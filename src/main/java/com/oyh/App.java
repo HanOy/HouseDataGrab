@@ -1,18 +1,26 @@
 package com.oyh;
 
-import java.io.IOException;
-
-import org.jsoup.Jsoup;
-import org.jsoup.nodes.Document;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
 
 /**
  * Hello world!
  *
  */
 public class App {
-    public static void main( String[] args ) throws IOException {
-    	Document doc = Jsoup.connect("http://www.yiibai.com").get();
-        String title = doc.title();
-        System.out.println("title is: " + title);
+    public static void main( String[] args ) {
+        
+        try {
+            ExecutorService pool = Executors.newCachedThreadPool();
+            
+            for (int i = 1; i <= 120; i++) {
+            	pool.execute(new GrabTask(i));
+            }
+            
+            //释放资源
+            pool.shutdown();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 }
