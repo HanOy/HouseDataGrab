@@ -6,6 +6,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.jsoup.Jsoup;
+import org.jsoup.helper.StringUtil;
 import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
@@ -44,11 +45,14 @@ public class GrabTask implements Runnable {
 			jdbc.insertHouseList(resultList);
 			
 		} catch (Exception e) {
+			System.out.println("第" + pageNumber + "页出错");
 			e.printStackTrace();
+		} finally {
+			System.out.println("第" + pageNumber + "页抓取完");
 		}
 	}
-	
 	private static HousePojo wrapElement2Pojo(Element element) {
+	
 		HousePojo house = new HousePojo();
 		//2室1厅1卫  |  62.28㎡  
 		String desc = element.select(".font14").html();
@@ -67,7 +71,11 @@ public class GrabTask implements Runnable {
 		house.setAddress(element.select(".lp_dizhi").text().replaceAll("\\s*", "").trim());
 		
 		house.setPrice(new BigDecimal(element.select(".lp_jia>span").text().trim()));
-		house.setAverage(new BigDecimal(element.select(".rg").text().trim().replace("元/㎡", "")));
+		if (StringUtil.isBlank(element.select(".rg").text().trim()) == false) {
+			house.setAverage(new BigDecimal(element.select(".rg").text().trim().replace("元/㎡", "")));
+		} else {
+			house.setAverage(house.getPrice().multiply(BigDecimal.valueOf(10000L)).divide(house.getArea(), 2, BigDecimal.ROUND_HALF_DOWN));
+		}
 		
 		house.setFloor(element.select(".gaoceng").text().replaceAll("\\s*", "").trim().split("\\|")[0]);
 		house.setYear(element.select(".gaoceng").text().replaceAll("\\s*", "").trim().split("\\|")[1].replace("建筑年代：", "").replace("年", ""));
@@ -76,7 +84,7 @@ public class GrabTask implements Runnable {
 		house.setElevator(0);
 		house.setVisit(0);
 		
-		Elements biaoqians = element.select(".biaoqian");
+		Elements biaoqians = element.select(".biaoqian>span");
 		for (Element biaoqian : biaoqians) {
 			if (biaoqian.hasClass("a002")) {
 				house.setElevator(1);

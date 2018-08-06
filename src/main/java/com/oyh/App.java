@@ -15,7 +15,7 @@ public class App {
             JdbcUtils jdbc = new JdbcUtils();
             jdbc.getConnection();
             
-            for (int i = 1; i <= 120; i++) {
+            for (int i = 1; i <= 123; i++) {
             	pool.execute(new GrabTask(i, jdbc));
             }
             

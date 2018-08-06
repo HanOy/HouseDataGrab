@@ -19,7 +19,7 @@ public class JdbcUtils {
     private static final String DRIVER = "com.mysql.jdbc.Driver";
     
     //数据库地址  
-    private static final String URL = "jdbc:mysql://localhost:3306/house";
+    private static final String URL = "jdbc:mysql://localhost:3306/house?useSSL=false&serverTimezone=GMT";
     
     private Connection connection;
     
@@ -79,22 +79,22 @@ public class JdbcUtils {
 
 	public void insertHouseList(List<HousePojo> resultList) throws SQLException {
 		for (HousePojo house : resultList) {
-			String sql = "insert into house (`room`, `hall`, `toilet`, `community`, `area`, `price`, `average`, `year`, `floor`, `district`, `address`, `subway`, `elevator`, `visit`, `href`) VALUES (";
-			sql += house.getRoom() + ",";
-			sql += house.getHall() + ",";
-			sql += house.getToilet() + ",";
-			sql += house.getCommunity() + ",";
-			sql += house.getArea() + ",";
-			sql += house.getPrice() + ",";
-			sql += house.getAverage() + ",";
-			sql += house.getYear() + ",";
-			sql += house.getFloor() + ",";
-			sql += house.getDistrict() + ",";
-			sql += house.getAddress() + ",";
-			sql += house.getSubway() + ",";
-			sql += house.getElevator() + ",";
-			sql += house.getVisit() + ",";
-			sql += house.getHref() + ")";
+			String sql = "insert into house (`room`, `hall`, `toilet`, `community`, `area`, `price`, `average`, `year`, `floor`, `district`, `address`, `subway`, `elevator`, `visit`, `href`) VALUES ('";
+			sql += house.getRoom() + "','";
+			sql += house.getHall() + "','";
+			sql += house.getToilet() + "','";
+			sql += house.getCommunity() + "','";
+			sql += house.getArea() + "','";
+			sql += house.getPrice() + "','";
+			sql += house.getAverage() + "','";
+			sql += house.getYear() + "','";
+			sql += house.getFloor() + "','";
+			sql += house.getDistrict() + "','";
+			sql += house.getAddress() + "','";
+			sql += house.getSubway() + "','";
+			sql += house.getElevator() + "','";
+			sql += house.getVisit() + "','";
+			sql += house.getHref() + "')";
 			
 			updateByPreparedStatement(sql);
 		}
