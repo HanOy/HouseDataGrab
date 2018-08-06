@@ -5,6 +5,7 @@ import java.sql.DriverManager;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.List;
 
 public class JdbcUtils {
 	
@@ -75,4 +76,27 @@ public class JdbcUtils {
             }
         }
     }
+
+	public void insertHouseList(List<HousePojo> resultList) throws SQLException {
+		for (HousePojo house : resultList) {
+			String sql = "insert into house (`room`, `hall`, `toilet`, `community`, `area`, `price`, `average`, `year`, `floor`, `district`, `address`, `subway`, `elevator`, `visit`, `href`) VALUES (";
+			sql += house.getRoom() + ",";
+			sql += house.getHall() + ",";
+			sql += house.getToilet() + ",";
+			sql += house.getCommunity() + ",";
+			sql += house.getArea() + ",";
+			sql += house.getPrice() + ",";
+			sql += house.getAverage() + ",";
+			sql += house.getYear() + ",";
+			sql += house.getFloor() + ",";
+			sql += house.getDistrict() + ",";
+			sql += house.getAddress() + ",";
+			sql += house.getSubway() + ",";
+			sql += house.getElevator() + ",";
+			sql += house.getVisit() + ",";
+			sql += house.getHref() + ")";
+			
+			updateByPreparedStatement(sql);
+		}
+	}
 }

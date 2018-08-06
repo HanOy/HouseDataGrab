@@ -12,11 +12,14 @@ public class App {
         
         try {
             ExecutorService pool = Executors.newCachedThreadPool();
+            JdbcUtils jdbc = new JdbcUtils();
+            jdbc.getConnection();
             
             for (int i = 1; i <= 120; i++) {
-            	pool.execute(new GrabTask(i));
+            	pool.execute(new GrabTask(i, jdbc));
             }
             
+            jdbc.releaseConn();
             //释放资源
             pool.shutdown();
         } catch (Exception e) {
