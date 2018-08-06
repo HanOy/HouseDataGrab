@@ -4,8 +4,12 @@ import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
+import java.sql.ResultSetMetaData;
 import java.sql.SQLException;
+import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 public class JdbcUtils {
 	
@@ -99,4 +103,43 @@ public class JdbcUtils {
 			updateByPreparedStatement(sql);
 		}
 	}
+	
+	/**
+	 * 执行查询操作
+	 * 
+	 * @param sql
+	 *            sql语句
+	 * @param params
+	 *            执行参数
+	 * @return
+	 * @throws SQLException
+	 */
+	public List<Map<String, Object>> findResult(String sql, List<?> params)
+			throws SQLException {
+		List<Map<String, Object>> list = new ArrayList<Map<String, Object>>();
+		int index = 1;
+		pstmt = connection.prepareStatement(sql);
+		if (params != null && !params.isEmpty()) {
+			for (int i = 0; i < params.size(); i++) {
+				pstmt.setObject(index++, params.get(i));
+			}
+		}
+		resultSet = pstmt.executeQuery();
+		ResultSetMetaData metaData = resultSet.getMetaData();
+		int cols_len = metaData.getColumnCount();
+		while (resultSet.next()) {
+			Map<String, Object> map = new HashMap<String, Object>();
+			for (int i = 0; i < cols_len; i++) {
+				String cols_name = metaData.getColumnName(i + 1);
+				Object cols_value = resultSet.getObject(cols_name);
+				if (cols_value == null) {
+					cols_value = "";
+				}
+				map.put(cols_name, cols_value);
+			}
+			list.add(map);
+		}
+		return list;
+	}
+
 }
